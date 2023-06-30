@@ -1,23 +1,43 @@
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
-import React from "react";
+import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import TopBar from '../Components/TopBar';
+import TaskList from '../Components/taskList/Index';
+import ModalTask from '../Components/ModalTask';
 
 const MainScreen = ({ taskList }) => {
-  console.log(taskList);
+  const [list, setList] = useState(taskList);
+  const [input, setInput] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [activeTask, setActiveTask] = useState({});
+
+  const onAddTask = () => {
+    console.log('se agregó');
+    setList([
+      ...list,
+      {
+        id: list.length + 1,
+        task: input,
+        completed: false,
+      },
+    ]);
+  };
+
+  const onPressTag = (task) => {
+    console.log(task);
+    setActiveTask(task);
+    setModalVisible(true);
+  };
+
+  // console.log(list);
   return (
     <View style={styles.container}>
-      <View style={styles.view1}>
-        <TextInput style={styles.input} />
-        <Button title="Agregar tareas" style={styles.button} />
-      </View>
-      <View style={styles.view2}>
-        {taskList.map((el, index) => {
-          return (
-            <View style={styles.task} key={index}>
-              <Text>{el.task}</Text>
-            </View>
-          );
-        })}
-      </View>
+      <TopBar input={input} onAddTask={onAddTask} setInput={setInput} />
+      <TaskList list={list} onPressTag={onPressTag} />
+      <ModalTask
+        activeTask={activeTask}
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </View>
   );
 };
@@ -27,44 +47,8 @@ export default MainScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  view1: {
-    flex: 2,
-    width: "100%",
-    backgroundColor: "pink",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  view2: {
-    flex: 8,
-    width: "100%",
-    backgroundColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  input: {
-    borderBottomColor: "purple",
-    borderBottomWidth: 3,
-    width: 150,
-    height: 20,
-    marginBottom: 8,
-  },
-  button: {
-    paddingHorizontal: 10,
-    width: 150,
-    height: 40,
-  },
-  task: {
-    width: "80%",
-    backgroundColor: "yellow",
-    padding: 10,
-    margin: 10,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
