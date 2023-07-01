@@ -4,14 +4,17 @@ import TopBar from '../Components/TopBar';
 import TaskList from '../Components/taskList/Index';
 import ModalTask from '../Components/ModalTask';
 
-const MainScreen = ({ taskList }) => {
-  const [list, setList] = useState(taskList);
+const MainScreen = () => {
+  const [list, setList] = useState([]);
   const [input, setInput] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [activeTask, setActiveTask] = useState({});
 
   const onAddTask = () => {
     console.log('se agregó');
+    if (input === '') {
+      return alert('agregar tarea por favor');
+    }
     setList([
       ...list,
       {
@@ -20,6 +23,7 @@ const MainScreen = ({ taskList }) => {
         completed: false,
       },
     ]);
+    setInput('');
   };
 
   const onPressTag = (task) => {
@@ -28,7 +32,32 @@ const MainScreen = ({ taskList }) => {
     setModalVisible(true);
   };
 
-  // console.log(list);
+  const onPressStatus = (status) => {
+    console.log('si');
+    const remainTasks = list.filter((el) => el.id !== activeTask.id);
+    const orderedList = [
+      ...remainTasks,
+      { ...activeTask, completed: status },
+    ].sort((a, b) => {
+      if (a.id > b.id) {
+        return 1;
+      }
+      if (a.id < b.id) {
+        return -1;
+      }
+      return 0;
+    });
+    setList(orderedList);
+    setModalVisible(false);
+  };
+
+  const onDeleteTask = () => {
+    const remainTasks = list.filter((el) => el.id !== activeTask.id);
+    setList(remainTasks);
+    setModalVisible(false);
+  };
+
+  console.log(list);
   return (
     <View style={styles.container}>
       <TopBar input={input} onAddTask={onAddTask} setInput={setInput} />
@@ -37,6 +66,8 @@ const MainScreen = ({ taskList }) => {
         activeTask={activeTask}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+        onPressStatus={onPressStatus}
+        onDeleteTask={onDeleteTask}
       />
     </View>
   );

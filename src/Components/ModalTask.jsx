@@ -1,7 +1,13 @@
 import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
 import React from 'react';
 
-const ModalTask = ({ modalVisible, setModalVisible, activeTask }) => {
+const ModalTask = ({
+  modalVisible,
+  setModalVisible,
+  activeTask,
+  onPressStatus,
+  onDeleteTask,
+}) => {
   return (
     <Modal
       animationType='slide'
@@ -18,15 +24,21 @@ const ModalTask = ({ modalVisible, setModalVisible, activeTask }) => {
           <View style={styles.buttonContainer}>
             <Pressable
               style={[styles.button, styles.buttonDone]}
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={() => onPressStatus(true)}
             >
               <Text style={styles.textStyle}>Realizada</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonNotDone]}
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={() => onPressStatus(false)}
             >
               <Text style={styles.textStyle}>No realizada</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonDelete]}
+              onPress={() => onDeleteTask()}
+            >
+              <Text style={styles.textStyle}>Eliminar</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -87,7 +99,10 @@ const styles = StyleSheet.create({
     margin: 3,
   },
   buttonClose: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'orange',
+  },
+  buttonDelete: {
+    backgroundColor: 'red',
   },
   textStyle: {
     color: 'white',
